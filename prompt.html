@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Basic 3D Game with Three.js</title>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      canvas { display: block; }
+    </style>
+  </head>
+  <body>
+    <!-- Include Three.js and Cannon.js -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"></script>
+
+    <script>
+      // Scene, camera, and renderer
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // Ground
+      const groundGeometry = new THREE.PlaneGeometry(20, 20);
+      const groundMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
+      const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+      ground.rotation.x = -Math.PI / 2;
+      scene.add(ground);
+
+      // Spheres for avatars
+      const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+      const playerMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      const enemyMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+      const defenderMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+
+      const player = new THREE.Mesh(sphereGeometry, playerMaterial);
+      const enemy = new THREE.Mesh(sphereGeometry, enemyMaterial);
+      const defender = new THREE.Mesh(sphereGeometry, defenderMaterial);
+
+      player.position.set(0, 0.5, 0);
+      enemy.position.set(-3, 0.5, 3);
+      defender.position.set(3, 0.5, -3);
+
+      scene.add(player);
+      scene.add(enemy);
+      scene.add(defender);
+
+      camera.position.set(0, 10, 10);
+      camera.lookAt(0, 0, 0);
+
+      // Basic movement
+      const keys = {};
+      document.addEventListener("keydown", e => keys[e.key] = true);
+      document.addEventListener("keyup", e => keys[e.key] = false);
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        if (keys["ArrowUp"]) player.positin.z -= 0.1;
+        if (keys["ArrowDown"]) player.position.z += 0.1;
+        if (keys["ArrowLeft"]) player.position.x -= 0.1;
+        if (keys["ArrowRight"]) player.position.x += 0.1;
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
